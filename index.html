@@ -1,117 +1,224 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Simulador Azure + AWS</title>
-<style>
- body { font-family: Arial, sans-serif; background:#f4f4f4; margin:0; padding:0; }
- header { background:#1e1e2d; padding:20px; color:white; text-align:center; font-size:22px; }
- .container { max-width:900px; margin:20px auto; background:white; padding:20px; border-radius:10px; box-shadow:0 0 10px rgba(0,0,0,0.1); }
- .menu button { width:45%; padding:20px; margin:10px; font-size:18px; cursor:pointer; border:none; border-radius:8px; }
- .azure { background:#0078d4; color:white; }
- .aws { background:#ff9900; color:white; }
- .section { display:none; }
- h2 { margin-top:0; }
- label { display:block; margin-top:10px; font-weight:bold; }
- input, select { width:100%; padding:10px; margin-top:5px; border-radius:5px; border:1px solid #ccc; }
- .btn { margin-top:15px; padding:12px; background:#1e1e2d; color:white; border:none; border-radius:6px; cursor:pointer; width:100%; font-size:16px; }
- .resultado { margin-top:15px; padding:15px; border-radius:8px; font-weight:bold; }
- .ok { background:#c8f7c5; color:#2f6627; }
- .erro { background:#f7c5c5; color:#662727; }
-</style>
+    <meta charset="UTF-8">
+    <title>Simulador de Identidade e Acessos - Nuvem</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f0f2f5;
+            padding: 20px;
+        }
+        h1 { text-align: center; }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            box-shadow: 0px 0px 10px #ccc;
+        }
+        input, select, button {
+            padding: 8px;
+            margin: 5px;
+            width: 95%;
+        }
+        .log {
+            background: black;
+            color: lime;
+            padding: 10px;
+            height: 200px;
+            overflow-y: scroll;
+            font-family: monospace;
+            border-radius: 5px;
+        }
+    </style>
 </head>
 <body>
-<header>Simulador de Criação de Acessos – Azure AD & AWS IAM</header>
-<div class="container" id="menuInicial">
- <h2>Escolha o ambiente para praticar:</h2>
- <div class="menu">
-   <button class="azure" onclick="abrir('azure')">Simular Azure AD (Microsoft Entra)</button>
-   <button class="aws" onclick="abrir('aws')">Simular AWS IAM</button>
- </div>
+
+<h1>Simulador Completo de Identidade e Acessos</h1>
+
+<div class="container">
+    <h2>▶ Criar Usuário</h2>
+    <input id="userName" placeholder="Nome do usuário">
+    <button onclick="createUser()">Criar Usuário</button>
 </div>
 
-<!-- AZURE -->
-<div class="container section" id="azure">
- <h2>Simulador Azure AD</h2>
- <label>Nome do usuário:</label>
- <input id="azNome" placeholder="ex: maria.souza" />
-
- <label>Tipo de função (Role):</label>
- <select id="azRole">
-   <option value="User">User</option>
-   <option value="Global Administrator">Global Administrator</option>
-   <option value="Password Administrator">Password Administrator</option>
- </select>
-
- <label>Grupo:</label>
- <select id="azGrupo">
-   <option value="Funcionarios">Funcionários</option>
-   <option value="TI">TI</option>
-   <option value="Seguranca">Segurança</option>
- </select>
-
- <button class="btn" onclick="criarAzure()">Criar Usuário</button>
- <div id="azResultado"></div>
+<div class="container">
+    <h2>▶ Criar Grupo</h2>
+    <input id="groupName" placeholder="Nome do grupo">
+    <button onclick="createGroup()">Criar Grupo</button>
 </div>
 
-<!-- AWS -->
-<div class="container section" id="aws">
- <h2>Simulador AWS IAM</h2>
- <label>Nome do usuário:</label>
- <input id="awsNome" placeholder="ex: joao.lima" />
+<div class="container">
+    <h2>▶ Criar Política</h2>
+    <input id="policyName" placeholder="Nome da política">
+    <button onclick="createPolicy()">Create Policy</button>
+</div>
 
- <label>Grupo:</label>
- <select id="awsGrupo">
-   <option value="Developers">Developers</option>
-   <option value="Admins">Admins</option>
-   <option value="ReadOnly">ReadOnly</option>
- </select>
+<div class="container">
+    <h2>▶ Atribuir Política ao Usuário</h2>
+    <input id="userPolicyUser" placeholder="Usuário">
+    <input id="userPolicyName" placeholder="Política">
+    <button onclick="assignPolicy()">Atribuir Política</button>
+</div>
 
- <label>Política (Policy):</label>
- <select id="awsPolicy">
-   <option value="AmazonS3FullAccess">AmazonS3FullAccess</option>
-   <option value="AdministratorAccess">AdministratorAccess</option>
-   <option value="ReadOnlyAccess">ReadOnlyAccess</option>
- </select>
+<div class="container">
+    <h2>▶ Adicionar Usuário a Grupo</h2>
+    <input id="addUser" placeholder="Usuário">
+    <input id="addGroup" placeholder="Grupo">
+    <button onclick="addUserToGroup()">Adicionar ao Grupo</button>
+</div>
 
- <button class="btn" onclick="criarAWS()">Criar Usuário</button>
- <div id="awsResultado"></div>
+<div class="container">
+    <h2>▶ Remover Usuário de Grupo</h2>
+    <input id="removeUser" placeholder="Usuário">
+    <input id="removeGroup" placeholder="Grupo">
+    <button onclick="removeUserFromGroup()">Remover do Grupo</button>
+</div>
+
+<div class="container">
+    <h2>▶ Resetar Senha</h2>
+    <input id="resetUser" placeholder="Usuário">
+    <button onclick="resetPassword()">Resetar Senha</button>
+</div>
+
+<div class="container">
+    <h2>▶ Habilitar / Desabilitar MFA</h2>
+    <input id="mfaUser" placeholder="Usuário">
+    <select id="mfaAction">
+        <option value="on">Habilitar MFA</option>
+        <option value="off">Desabilitar MFA</option>
+    </select>
+    <button onclick="toggleMFA()">Aplicar</button>
+</div>
+
+<div class="container">
+    <h2>▶ Deletar Usuário</h2>
+    <input id="deleteUser" placeholder="Usuário">
+    <button onclick="deleteUser()">Deletar Usuário</button>
+</div>
+
+<div class="container">
+    <h2>▶ Simular Login</h2>
+    <input id="loginUser" placeholder="Usuário">
+    <button onclick="simulateLogin()">Simular Login</button>
+</div>
+
+<div class="container">
+    <h2>▶ Listar Tudo</h2>
+    <button onclick="listAll()">Listar Usuários, Grupos e Políticas</button>
+</div>
+
+<div class="container">
+    <h2>LOG DO SISTEMA</h2>
+    <div class="log" id="log"></div>
 </div>
 
 <script>
-function abrir(sec) {
- document.getElementById("menuInicial").style.display = "none";
- document.getElementById(sec).style.display = "block";
+let users = {};
+let groups = {};
+let policies = {};
+
+function log(msg) {
+    document.getElementById("log").innerHTML += msg + "<br>";
 }
 
-function criarAzure() {
- let nome = document.getElementById("azNome").value.trim();
- let role = document.getElementById("azRole").value;
- let grupo = document.getElementById("azGrupo").value;
- let area = document.getElementById("azResultado");
-
- if (!nome) {
-   area.innerHTML = `<div class='resultado erro'>Erro: O nome do usuário é obrigatório.</div>`;
-   return;
- }
-
- area.innerHTML = `<div class='resultado ok'>Usuário <b>${nome}</b> criado no Azure AD com função <b>${role}</b> e adicionado ao grupo <b>${grupo}</b>.</div>`;
+// Criar usuário
+function createUser() {
+    const name = document.getElementById("userName").value;
+    if (!name) return;
+    users[name] = { password: "1234", mfa: false, groups: [], policies: [] };
+    log("Usuário criado: " + name);
 }
 
-function criarAWS() {
- let nome = document.getElementById("awsNome").value.trim();
- let grupo = document.getElementById("awsGrupo").value;
- let policy = document.getElementById("awsPolicy").value;
- let area = document.getElementById("awsResultado");
+// Criar grupo
+function createGroup() {
+    const group = document.getElementById("groupName").value;
+    if (!group) return;
+    groups[group] = [];
+    log("Grupo criado: " + group);
+}
 
- if (!nome) {
-   area.innerHTML = `<div class='resultado erro'>Erro: O nome do usuário é obrigatório.</div>`;
-   return;
- }
+// Criar política
+function createPolicy() {
+    const policy = document.getElementById("policyName").value;
+    if (!policy) return;
+    policies[policy] = true;
+    log("Política criada: " + policy);
+}
 
- area.innerHTML = `<div class='resultado ok'>Usuário <b>${nome}</b> criado no AWS IAM, adicionado ao grupo <b>${grupo}</b> e com política <b>${policy}</b>.</div>`;
+// Atribuir políticas
+function assignPolicy() {
+    const user = document.getElementById("userPolicyUser").value;
+    const policy = document.getElementById("userPolicyName").value;
+    if (!users[user]) return log("Usuário não existe!");
+    if (!policies[policy]) return log("Política não existe!");
+    users[user].policies.push(policy);
+    log("Política " + policy + " atribuída ao usuário " + user);
+}
+
+// Adicionar usuário ao grupo
+function addUserToGroup() {
+    const user = document.getElementById("addUser").value;
+    const group = document.getElementById("addGroup").value;
+    if (!users[user]) return log("Usuário não existe!");
+    if (!groups[group]) return log("Grupo não existe!");
+    groups[group].push(user);
+    users[user].groups.push(group);
+    log("Usuário " + user + " adicionado ao grupo " + group);
+}
+
+// Remover do grupo
+function removeUserFromGroup() {
+    const user = document.getElementById("removeUser").value;
+    const group = document.getElementById("removeGroup").value;
+    if (!users[user]) return log("Usuário não existe!");
+    if (!groups[group]) return log("Grupo não existe!");
+    groups[group] = groups[group].filter(u => u !== user);
+    users[user].groups = users[user].groups.filter(g => g !== group);
+    log("Usuário " + user + " removido do grupo " + group);
+}
+
+// Resetar senha
+function resetPassword() {
+    const user = document.getElementById("resetUser").value;
+    if (!users[user]) return log("Usuário não existe!");
+    users[user].password = "novaSenha123";
+    log("Senha de " + user + " resetada!");
+}
+
+// MFA
+function toggleMFA() {
+    const user = document.getElementById("mfaUser").value;
+    const action = document.getElementById("mfaAction").value;
+    if (!users[user]) return log("Usuário não existe!");
+    users[user].mfa = action === "on";
+    log("MFA para " + user + " agora está: " + (users[user].mfa ? "Ativado" : "Desativado"));
+}
+
+// Deletar usuário
+function deleteUser() {
+    const user = document.getElementById("deleteUser").value;
+    if (!users[user]) return log("Usuário não existe!");
+    delete users[user];
+    log("Usuário deletado: " + user);
+}
+
+// Simular login
+function simulateLogin() {
+    const user = document.getElementById("loginUser").value;
+    if (!users[user]) return log("Usuário não existe!");
+    log("LOGIN: " + user + " | MFA: " + users[user].mfa + " | Políticas: " + users[user].policies.join(", "));
+}
+
+// Listar tudo
+function listAll() {
+    log("<br>📌 Usuários: " + JSON.stringify(users));
+    log("📌 Grupos: " + JSON.stringify(groups));
+    log("📌 Políticas: " + JSON.stringify(policies) + "<br>");
 }
 </script>
+
 </body>
 </html>
+
