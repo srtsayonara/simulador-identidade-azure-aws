@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Simulador Azure + AWS</title>
+<style>
+ body { font-family: Arial, sans-serif; background:#f4f4f4; margin:0; padding:0; }
+ header { background:#1e1e2d; padding:20px; color:white; text-align:center; font-size:22px; }
+ .container { max-width:900px; margin:20px auto; background:white; padding:20px; border-radius:10px; box-shadow:0 0 10px rgba(0,0,0,0.1); }
+ .menu button { width:45%; padding:20px; margin:10px; font-size:18px; cursor:pointer; border:none; border-radius:8px; }
+ .azure { background:#0078d4; color:white; }
+ .aws { background:#ff9900; color:white; }
+ .section { display:none; }
+ h2 { margin-top:0; }
+ label { display:block; margin-top:10px; font-weight:bold; }
+ input, select { width:100%; padding:10px; margin-top:5px; border-radius:5px; border:1px solid #ccc; }
+ .btn { margin-top:15px; padding:12px; background:#1e1e2d; color:white; border:none; border-radius:6px; cursor:pointer; width:100%; font-size:16px; }
+ .resultado { margin-top:15px; padding:15px; border-radius:8px; font-weight:bold; }
+ .ok { background:#c8f7c5; color:#2f6627; }
+ .erro { background:#f7c5c5; color:#662727; }
+</style>
+</head>
+<body>
+<header>Simulador de Criação de Acessos – Azure AD & AWS IAM</header>
+<div class="container" id="menuInicial">
+ <h2>Escolha o ambiente para praticar:</h2>
+ <div class="menu">
+   <button class="azure" onclick="abrir('azure')">Simular Azure AD (Microsoft Entra)</button>
+   <button class="aws" onclick="abrir('aws')">Simular AWS IAM</button>
+ </div>
+</div>
+
+<!-- AZURE -->
+<div class="container section" id="azure">
+ <h2>Simulador Azure AD</h2>
+ <label>Nome do usuário:</label>
+ <input id="azNome" placeholder="ex: maria.souza" />
+
+ <label>Tipo de função (Role):</label>
+ <select id="azRole">
+   <option value="User">User</option>
+   <option value="Global Administrator">Global Administrator</option>
+   <option value="Password Administrator">Password Administrator</option>
+ </select>
+
+ <label>Grupo:</label>
+ <select id="azGrupo">
+   <option value="Funcionarios">Funcionários</option>
+   <option value="TI">TI</option>
+   <option value="Seguranca">Segurança</option>
+ </select>
+
+ <button class="btn" onclick="criarAzure()">Criar Usuário</button>
+ <div id="azResultado"></div>
+</div>
+
+<!-- AWS -->
+<div class="container section" id="aws">
+ <h2>Simulador AWS IAM</h2>
+ <label>Nome do usuário:</label>
+ <input id="awsNome" placeholder="ex: joao.lima" />
+
+ <label>Grupo:</label>
+ <select id="awsGrupo">
+   <option value="Developers">Developers</option>
+   <option value="Admins">Admins</option>
+   <option value="ReadOnly">ReadOnly</option>
+ </select>
+
+ <label>Política (Policy):</label>
+ <select id="awsPolicy">
+   <option value="AmazonS3FullAccess">AmazonS3FullAccess</option>
+   <option value="AdministratorAccess">AdministratorAccess</option>
+   <option value="ReadOnlyAccess">ReadOnlyAccess</option>
+ </select>
+
+ <button class="btn" onclick="criarAWS()">Criar Usuário</button>
+ <div id="awsResultado"></div>
+</div>
+
+<script>
+function abrir(sec) {
+ document.getElementById("menuInicial").style.display = "none";
+ document.getElementById(sec).style.display = "block";
+}
+
+function criarAzure() {
+ let nome = document.getElementById("azNome").value.trim();
+ let role = document.getElementById("azRole").value;
+ let grupo = document.getElementById("azGrupo").value;
+ let area = document.getElementById("azResultado");
+
+ if (!nome) {
+   area.innerHTML = `<div class='resultado erro'>Erro: O nome do usuário é obrigatório.</div>`;
+   return;
+ }
+
+ area.innerHTML = `<div class='resultado ok'>Usuário <b>${nome}</b> criado no Azure AD com função <b>${role}</b> e adicionado ao grupo <b>${grupo}</b>.</div>`;
+}
+
+function criarAWS() {
+ let nome = document.getElementById("awsNome").value.trim();
+ let grupo = document.getElementById("awsGrupo").value;
+ let policy = document.getElementById("awsPolicy").value;
+ let area = document.getElementById("awsResultado");
+
+ if (!nome) {
+   area.innerHTML = `<div class='resultado erro'>Erro: O nome do usuário é obrigatório.</div>`;
+   return;
+ }
+
+ area.innerHTML = `<div class='resultado ok'>Usuário <b>${nome}</b> criado no AWS IAM, adicionado ao grupo <b>${grupo}</b> e com política <b>${policy}</b>.</div>`;
+}
+</script>
+</body>
+</html>
